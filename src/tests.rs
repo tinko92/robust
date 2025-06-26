@@ -2,7 +2,9 @@
 // Fixtures copied from https://github.com/mourner/robust-predicates/tree/main/test/fixtures
 // Original location: https://www.cs.cmu.edu/afs/cs/project/pscico/pscico/src/arithmetic/compiler1/test/
 
-use super::{incircle, insphere, orient2d, orient3d, Coord, Coord3D};
+use super::{
+    incircle, insphere, orient2d, orient2d_generic, orient3d, Coord, Coord3D, CoordGeneric,
+};
 
 #[cfg(not(feature = "no_std"))]
 use std::fs::File;
@@ -57,6 +59,79 @@ fn test_orient2d_fixtures() {
             c1 = c1,
             c2 = c2,
             c3 = c3
+        );
+    })
+}
+
+#[cfg(all(not(feature = "no_std"), feature = "f128"))]
+#[test]
+fn test_orient2d_fixtures_f128() {
+    let f = filename_to_string("fixtures/orient2d.txt").unwrap();
+    let fixtures = results_by_line(&f);
+    fixtures.iter().enumerate().for_each(|(idx, fixture)| {
+        let ax = fixture[0] as f128;
+        let ay = fixture[1] as f128;
+        let bx = fixture[2] as f128;
+        let by = fixture[3] as f128;
+        let cx = fixture[4] as f128;
+        let cy = fixture[5] as f128;
+        let sign = fixture[6] as f128;
+        let c1 = CoordGeneric { x: ax, y: ay };
+        let c2 = CoordGeneric { x: bx, y: by };
+        let c3 = CoordGeneric { x: cx, y: cy };
+        let res = orient2d_generic(c1, c2, c3);
+        // result sign and fixture sign should be equal
+        assert!(
+            res.signum() == sign.signum(),
+            "Line {line:?}: Result sign ({result:?}) and fixture sign ({sign:?}) should match
+            \nCoord 1: {c1:?}\nCoord 2: {c2:?}\nCoord 3: {c3:?}",
+            line = idx + 1,
+            result = res,
+            sign = sign,
+            c1 = c1,
+            c2 = c2,
+            c3 = c3
+        );
+    })
+}
+
+#[cfg(not(feature = "no_std"))]
+#[test]
+fn test_orient2d_fixtures_f32() {
+    let f = filename_to_string("fixtures/orient2d.txt").unwrap();
+    let fixtures = results_by_line(&f);
+    fixtures.iter().enumerate().for_each(|(idx, fixture)| {
+        // Skip cases that may go out or range.
+        if fixture[0..6].iter().any(|&v| v.abs() > 1e18) ||
+            fixture[0..6].iter().any(|&v| v != 0.0 && v < 1e-11)
+        {
+            return;
+        }
+        let ax_f32 = fixture[0] as f32;
+        let ay_f32 = fixture[1] as f32;
+        let bx_f32 = fixture[2] as f32;
+        let by_f32 = fixture[3] as f32;
+        let cx_f32 = fixture[4] as f32;
+        let cy_f32 = fixture[5] as f32;
+        let c1_f32 = CoordGeneric { x: ax_f32, y: ay_f32 };
+        let c2_f32 = CoordGeneric { x: bx_f32, y: by_f32 };
+        let c3_f32 = CoordGeneric { x: cx_f32, y: cy_f32 };
+        let c1_f64 = Coord { x: ax_f32, y: ay_f32 };
+        let c2_f64 = Coord { x: bx_f32, y: by_f32 };
+        let c3_f64 = Coord { x: cx_f32, y: cy_f32 };
+        let res_f32 = orient2d_generic(c1_f32, c2_f32, c3_f32);
+        let res_f64 = orient2d(c1_f64, c2_f64, c3_f64);
+        // result sign in f32 should be equal to result sign in f64
+        assert!(
+            res_f32.signum() as f64 == res_f64.signum(),
+            "Line {line}: Result sign in f32 ({result_f32}) and result sign in 64 ({result_f64}) should match
+            \nCoord 1: {c1:?}\nCoord 2: {c2:?}\nCoord 3: {c3:?}",
+            line = idx + 1,
+            result_f32 = res_f32,
+            result_f64 = res_f64,
+            c1 = c1_f32,
+            c2 = c2_f32,
+            c3 = c3_f32
         );
     })
 }
