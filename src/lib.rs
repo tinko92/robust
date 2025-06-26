@@ -1,5 +1,5 @@
 #![cfg_attr(feature = "no_std", no_std)]
-#![cfg_attr(feature = "f128", feature(f128))]
+//#![cfg_attr(feature = "f128", feature(f128))]
 #![doc(html_logo_url = "https://raw.githubusercontent.com/georust/meta/master/logo/logo.png")]
 // Copyright 2017 The Spade Developers.
 // Copyright 2020 The GeoRust Project Developers.
@@ -128,8 +128,8 @@ macro_rules! impl_ieee754 {
 impl_ieee754!(f32);
 impl_ieee754!(f64);
 
-#[cfg(feature = "f128")]
-impl_ieee754!(f128);
+//#[cfg(feature = "f128")]
+//impl_ieee754!(f128);
 
 /// A two dimensional generic coordinate.
 #[derive(Copy, Clone, Debug, PartialEq)]

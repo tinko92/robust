@@ -63,37 +63,37 @@ fn test_orient2d_fixtures() {
     })
 }
 
-#[cfg(all(not(feature = "no_std"), feature = "f128"))]
-#[test]
-fn test_orient2d_fixtures_f128() {
-    let f = filename_to_string("fixtures/orient2d.txt").unwrap();
-    let fixtures = results_by_line(&f);
-    fixtures.iter().enumerate().for_each(|(idx, fixture)| {
-        let ax = fixture[0] as f128;
-        let ay = fixture[1] as f128;
-        let bx = fixture[2] as f128;
-        let by = fixture[3] as f128;
-        let cx = fixture[4] as f128;
-        let cy = fixture[5] as f128;
-        let sign = fixture[6] as f128;
-        let c1 = CoordGeneric { x: ax, y: ay };
-        let c2 = CoordGeneric { x: bx, y: by };
-        let c3 = CoordGeneric { x: cx, y: cy };
-        let res = orient2d_generic(c1, c2, c3);
-        // result sign and fixture sign should be equal
-        assert!(
-            res.signum() == sign.signum(),
-            "Line {line:?}: Result sign ({result:?}) and fixture sign ({sign:?}) should match
-            \nCoord 1: {c1:?}\nCoord 2: {c2:?}\nCoord 3: {c3:?}",
-            line = idx + 1,
-            result = res,
-            sign = sign,
-            c1 = c1,
-            c2 = c2,
-            c3 = c3
-        );
-    })
-}
+//#[cfg(all(not(feature = "no_std"), feature = "f128"))]
+//#[test]
+//fn test_orient2d_fixtures_f128() {
+//    let f = filename_to_string("fixtures/orient2d.txt").unwrap();
+//    let fixtures = results_by_line(&f);
+//    fixtures.iter().enumerate().for_each(|(idx, fixture)| {
+//        let ax = fixture[0] as f128;
+//        let ay = fixture[1] as f128;
+//        let bx = fixture[2] as f128;
+//        let by = fixture[3] as f128;
+//        let cx = fixture[4] as f128;
+//        let cy = fixture[5] as f128;
+//        let sign = fixture[6] as f128;
+//        let c1 = CoordGeneric { x: ax, y: ay };
+//        let c2 = CoordGeneric { x: bx, y: by };
+//        let c3 = CoordGeneric { x: cx, y: cy };
+//        let res = orient2d_generic(c1, c2, c3);
+// result sign and fixture sign should be equal
+//        assert!(
+//            res.signum() == sign.signum(),
+//            "Line {line:?}: Result sign ({result:?}) and fixture sign ({sign:?}) should match
+//            \nCoord 1: {c1:?}\nCoord 2: {c2:?}\nCoord 3: {c3:?}",
+//            line = idx + 1,
+//            result = res,
+//            sign = sign,
+//            c1 = c1,
+//            c2 = c2,
+//            c3 = c3
+//        );
+//    })
+//}
 
 #[cfg(not(feature = "no_std"))]
 #[test]

@@ -16,7 +16,7 @@ categories = ["algorithms", "graphics", "science::geo"]
 
 [features]
 no_std = []
-f128 = []
+#f128 = []
 
 [dev-dependencies]
 png = "0.16.8"
